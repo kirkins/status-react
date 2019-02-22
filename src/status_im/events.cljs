@@ -43,7 +43,6 @@
             [status-im.stickers.core :as stickers]
             [status-im.transport.core :as transport]
             [status-im.transport.message.core :as transport.message]
-            [status-im.tribute-to-talk.core :as tribute-to-talk]
             [status-im.ui.components.bottom-sheet.core :as bottom-sheet]
             [status-im.ui.components.react :as react]
             [status-im.ui.screens.add-new.new-chat.db :as new-chat.db]
@@ -58,10 +57,10 @@
             [status-im.utils.logging.core :as logging]
             [status-im.utils.utils :as utils]
             [status-im.wallet.core :as wallet]
+            [status-im.wallet.custom-tokens.core :as custom-tokens]
             [status-im.wallet.db :as wallet.db]
             [status-im.web3.core :as web3]
-            [taoensso.timbre :as log]
-            [status-im.wallet.custom-tokens.core :as custom-tokens]))
+            [taoensso.timbre :as log]))
 
 ;; init module
 
@@ -849,12 +848,6 @@
  :chat.ui/message-expand-toggled
  (fn [cofx [_ chat-id message-id]]
    (chat.message/toggle-expand-message cofx chat-id message-id)))
-
-(handlers/register-handler-fx
- :chat.ui/show-profile
- (fn [cofx [_ identity]]
-   (navigation/navigate-to-cofx
-    (assoc-in cofx [:db :contacts/identity] identity) :profile nil)))
 
 (handlers/register-handler-fx
  :chat.ui/set-chat-input-text
@@ -1922,97 +1915,7 @@
    (stickers/pending-timeout cofx)))
 
 ;; Tribute to Talk
-(handlers/register-handler-fx
- :tribute-to-talk.ui/menu-item-pressed
- (fn [cofx _]
-   (tribute-to-talk/open-settings cofx)))
 
-(handlers/register-handler-fx
- :tribute-to-talk.ui/learn-more-pressed
- (fn [cofx _]
-   (tribute-to-talk/open-learn-more cofx)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.ui/step-back-pressed
- (fn [cofx _]
-   (tribute-to-talk/step-back cofx)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.ui/step-forward-pressed
- (fn [cofx _]
-   (tribute-to-talk/step-forward cofx)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.ui/numpad-key-pressed
- (fn [cofx [_ numpad-key]]
-   (tribute-to-talk/update-snt-amount cofx numpad-key)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.ui/message-changed
- (fn [cofx [_ message]]
-   (tribute-to-talk/update-message cofx message)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.ui/edit-pressed
- (fn [cofx _]
-   (tribute-to-talk/start-editing cofx)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.ui/remove-pressed
- (fn [cofx _]
-   (tribute-to-talk/remove cofx)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.callback/check-manifest-success
- (fn [cofx  [_ identity contenthash]]
-   (tribute-to-talk/fetch-manifest cofx identity contenthash)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.callback/no-manifest-found
- (fn [cofx  [_ identity]]
-   (tribute-to-talk/update-settings cofx nil)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.callback/fetch-manifest-success
- (fn [cofx  [_ identity {:keys [tribute-to-talk]}]]
-   (tribute-to-talk/update-settings cofx tribute-to-talk)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.callback/fetch-manifest-failure
- (fn [cofx  [_ identity contenthash]]
-   (tribute-to-talk/fetch-manifest cofx identity contenthash)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.ui/check-manifest
- (fn [{:keys [db] :as cofx}  [_ identity]]
-   (tribute-to-talk/check-manifest cofx identity)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.callback/manifest-uploaded
- (fn [cofx [_ hash]]
-   (tribute-to-talk/set-manifest-signing-flow cofx hash)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.callback/manifest-upload-failed
- (fn [cofx [_ error]]
-   (tribute-to-talk/on-manifest-upload-failed cofx error)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.callback/set-manifest-transaction-completed
- (fn [cofx [_ id transaction-hash method]]
-   (tribute-to-talk/on-set-manifest-transaction-completed cofx
-                                                          transaction-hash)))
-
-(handlers/register-handler-fx
- :tribute-to-talk.callback/set-manifest-transaction-failed
- (fn [cofx [_ error]]
-   (tribute-to-talk/on-set-manifest-transaction-failed cofx
-                                                       error)))
-
-(handlers/register-handler-fx
- :tribute-to-talk/check-set-manifest-transaction-timeout
- (fn [cofx _]
-   (tribute-to-talk/check-set-manifest-transaction cofx)))
 
 ;; bottom-sheet events
 (handlers/register-handler-fx
