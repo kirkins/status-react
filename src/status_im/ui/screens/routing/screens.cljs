@@ -150,6 +150,9 @@
    :my-profile                       profile.user/my-profile
    :my-profile-ext-settings          profile.user/extensions-settings
    :contacts-list                    contacts-list/contacts-list
+   :ens-main                         ens/main
+   :ens-register                     ens/register
+   :ens-terms                        ens/terms
    :blocked-users-list               contacts-list/blocked-users-list
    :profile-photo-capture            photo-capture/profile-photo-capture
    :about-app                        about-app/about-app
