@@ -251,3 +251,9 @@
   (update v13 :properties assoc
           :group-chat-local-version {:type :int
                                      :optional true}))
+(def v15
+  (-> v14
+      (update :properties dissoc :message-overhead)
+      (update :properties dissoc :removed-from-at)
+      (update :properties dissoc :added-to-at)
+      (update :properties dissoc :removed-at)))
