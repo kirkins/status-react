@@ -159,6 +159,9 @@
 ;;ethereum
 (reg-root-key-sub :ethereum/current-block :ethereum/current-block)
 
+;;ens
+(reg-root-key-sub :ens :ens)
+
 ;;GENERAL ==============================================================================================================
 
 (re-frame/reg-sub
@@ -1692,3 +1695,35 @@
  :<- [:search/filter]
  (fn [[chats search-filter]]
    (apply-filter search-filter chats extract-chat-attributes)))
+
+;;ENS ==================================================================================================================
+
+(re-frame/reg-sub
+ :ens
+ :ens)
+
+(re-frame/reg-sub
+ :ens.stateofus/registrar
+ :<- [:account/network]
+ (fn [network]
+   (let [chain (ethereum/network->chain-keyword network)]
+     (get stateofus/registrars chain))))
+
+(re-frame/reg-sub
+ :account/usernames
+ :<- [:account/account]
+ (fn [acc]
+   (:usernames acc)))
+
+(re-frame/reg-sub
+ :ens.registration/screen
+ :<- [:ens]
+ :<- [:ens.stateofus/registrar]
+ :<- [:account/account]
+ (fn [[{:keys [state username custom-domain?]} registrar {:keys [address public-key]}]]
+   {:state          state
+    :username       username
+    :custom-domain? (or custom-domain? false)
+    :contract       registrar
+    :address        address
+    :public-key     public-key}))
